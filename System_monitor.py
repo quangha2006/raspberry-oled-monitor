@@ -40,7 +40,7 @@ def cpu_usage():
     # load average, uptime
     uptime = datetime.now() - datetime.fromtimestamp(psutil.boot_time())
     cpu = psutil.cpu_percent(interval=None)
-    return "CPU {0}%".format(cpu)
+    return "{0}%".format(cpu)
 
 def mem_usage():
     usage = psutil.virtual_memory()
@@ -92,6 +92,8 @@ def stats(device):
         draw.text((x, top+4), chr(62152), font=font_icon, fill=255)
 # Icon memory
         draw.text((x+60, top+4), chr(62171), font=font_icon, fill=255)
+#Icon CPU     F0E4
+        draw.text((x+60, top+30), '\uF0E4', font=font_icon, fill=255)
 # Icon disk
         draw.text((x, top+30), chr(61888),  font=font2, fill=255)
 # Icon Wifi
