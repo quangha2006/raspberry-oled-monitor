@@ -27,65 +27,40 @@ from PIL import ImageDraw
 from PIL import Image
 import subprocess
 
-# try:
-#    import psutil
-# except ImportError:
-#    print("The psutil library was not found. Run 'sudo -H pip install psutil' to install it.")
-#    sys.exit()
-
+try:
+    import psutil
+except ImportError:
+    print("The psutil library was not found. Run 'sudo -H pip install psutil' to install it.")
+    sys.exit()
 
 # TODO: custom font bitmaps for up/down arrows
 # TODO: Load histogram
 
+def cpu_usage():
+    # load average, uptime
+    uptime = datetime.now() - datetime.fromtimestamp(psutil.boot_time())
+    cpu = psutil.cpu_percent(interval=None)
+    return "CPU {0}%".format(cpu)
 
-# def bytes2human(n):
-#     """
-#     >>> bytes2human(10000)
-#     '9K'
-#     >>> bytes2human(100001221)
-#     '95M'
-#     """
-#     symbols = ('K', 'M', 'G', 'T', 'P', 'E', 'Z', 'Y')
-#     prefix = {}
-#     for i, s in enumerate(symbols):
-#         prefix[s] = 1 << (i + 1) * 10
-#     for s in reversed(symbols):
-#         if n >= prefix[s]:
-#             value = int(float(n) / prefix[s])
-#             return '%s%s' % (value, s)
-#     return "%sB" % n
+def mem_usage():
+    usage = psutil.virtual_memory()
+    return str(usage.percent)
 
 
-# def cpu_usage():
-#     # load average, uptime
-#     uptime = datetime.now() - datetime.fromtimestamp(psutil.boot_time())
-#     av1, av2, av3 = os.getloadavg()
-#     return "Ld:%.1f %.1f %.1f Up: %s" \
-#         % (av1, av2, av3, str(uptime).split('.')[0])
+def disk_usage(dir):
+    usage = psutil.disk_usage(dir)
+    return str(usage.percent)
 
 
-# def mem_usage():
-#     usage = psutil.virtual_memory()
-#     return "Mem: %s %.0f%%" \
-#         % (bytes2human(usage.used), 100 - usage.percent)
+def network(iface):
+    addrs = psutil.net_if_addrs()[iface]
+    if addrs.count > 0:
+        return str(addrs[0].address)
+    return "Unknows"
 
-
-# def disk_usage(dir):
-#     usage = psutil.disk_usage(dir)
-#     return "SD:  %s %.0f%%" \
-#         % (bytes2human(usage.used), usage.percent)
-
-
-# def network(iface):
-#     stat = psutil.net_io_counters(pernic=True)[iface]
-#     return "%s: Tx%s, Rx%s" % \
-#            (iface, bytes2human(stat.bytes_sent), bytes2human(stat.bytes_recv))
-def parserOutput(strinput):
-    index = strinput.find("b'")
-    if index == 0:
-        strinput = strinput.replace("b'",'')
-        strinput = strinput[:-1]
-    return strinput
+def cpu_temperature():
+    temp = psutil.sensors_temperatures(fahrenheit=False)
+    return '{0:.1f}\'C'.format(float(temp['cpu_thermal'][0].current))
 
 def stats(device):
     with canvas(device) as draw:
@@ -93,24 +68,24 @@ def stats(device):
         draw.rectangle((0,0,width,height), outline=0, fill=0)
 
         # Shell scripts for system monitoring from here : https://unix.stackexchange.com/questions/119126/command-to-display-memory-usag>
-        cmd = "hostname -I | cut -d\' \' -f1 | head --bytes -1"
-        IP = subprocess.check_output(cmd, shell = True ).decode(sys.stdout.encoding)
-
+        #cmd = "hostname -I | cut -d\' \' -f1 | head --bytes -1"
+        #IP = subprocess.check_output(cmd, shell = True ).decode(sys.stdout.encoding)
+        IP = network('eth0')
 #       cmd = "top -bn1 | grep load | awk '{printf \"CPU %.2f%\", $(NF-2)}'"
-        cmd = "top -bn1 | grep \"Cpu(s)\" | sed \"s/.*, *\([0-9.]*\)%* id.*/\\1/\" | awk '{printf \"CPU %s%\", 100 - $1}'"
-        CPU = subprocess.check_output(cmd, shell = True ).decode(sys.stdout.encoding)
-
+        #cmd = "top -bn1 | grep \"Cpu(s)\" | sed \"s/.*, *\([0-9.]*\)%* id.*/\\1/\" | awk '{printf \"CPU %s%\", 100 - $1}'"
+        #CPU = subprocess.check_output(cmd, shell = True ).decode(sys.stdout.encoding)
+        CPU = cpu_usage()
 #       cmd = "free -m | awk 'NR==2{printf \"%.2f%%\", $3*100/$2 }'"
-        cmd = "free -m | awk 'NR==2{printf \"%sMB\", $3}'"
-        MemUsage = subprocess.check_output(cmd, shell = True).decode(sys.stdout.encoding)
-
-        cmd = "df -h | awk '$NF==\"/\"{printf \"HDD: %d/%dGB %s\", $3,$2,$5}'"
-        cmd = "df -h | awk '$NF==\"/\"{printf \"%s\", $5}'"
-        Disk = subprocess.check_output(cmd, shell = True ).decode(sys.stdout.encoding)
-
-        cmd = "vcgencmd measure_temp | cut -d '=' -f 2 | head --bytes -1"
-        Temperature = subprocess.check_output(cmd, shell = True ).decode(sys.stdout.encoding)
-
+        #cmd = "free -m | awk 'NR==2{printf \"%sMB\", $3}'"
+        #MemUsage = subprocess.check_output(cmd, shell = True).decode(sys.stdout.encoding)
+        MemUsage = mem_usage()
+        #cmd = "df -h | awk '$NF==\"/\"{printf \"HDD: %d/%dGB %s\", $3,$2,$5}'"
+        #cmd = "df -h | awk '$NF==\"/\"{printf \"%s\", $5}'"
+        #Disk = subprocess.check_output(cmd, shell = True ).decode(sys.stdout.encoding)
+        Disk = disk_usage('/')
+        #cmd = "vcgencmd measure_temp | cut -d '=' -f 2 | head --bytes -1"
+        #Temperature = subprocess.check_output(cmd, shell = True ).decode(sys.stdout.encoding)
+        Temperature = cpu_temperature()
 # Icons
 # Icon temperator
         draw.text((x, top+4), chr(62152), font=font_icon, fill=255)
