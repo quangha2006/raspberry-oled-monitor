@@ -54,7 +54,7 @@ def disk_usage(dir):
 
 def network(iface):
     addrs = psutil.net_if_addrs()[iface]
-    if addrs.count() > 0:
+    if len(addrs) > 0:
         return str(addrs[0].address)
     return "Unknows"
 
