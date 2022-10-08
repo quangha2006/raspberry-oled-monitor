@@ -44,12 +44,12 @@ def cpu_usage():
 
 def mem_usage():
     usage = psutil.virtual_memory()
-    return str(usage.percent)
+    return "{0}%".format(str(usage.percent))
 
 
 def disk_usage(dir):
     usage = psutil.disk_usage(dir)
-    return str(usage.percent)
+    return "{0}%".format(str(usage.percent))
 
 
 def network(iface):
