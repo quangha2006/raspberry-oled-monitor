@@ -25,7 +25,7 @@ from luma.core.render import canvas
 from PIL import ImageFont
 from PIL import ImageDraw
 from PIL import Image
-import subprocess
+import socket
 
 try:
     import psutil
@@ -55,8 +55,9 @@ def disk_usage(dir):
 def network(iface):
     addrs = psutil.net_if_addrs()[iface]
     if len(addrs) > 0:
-        return str(addrs[0].address)
-    return "Unknows"
+        if addrs[0].family == socket.AF_INET:
+            return str(addrs[0].address)
+    return "Disconnected"
 
 def cpu_temperature():
     temp = psutil.sensors_temperatures(fahrenheit=False)
