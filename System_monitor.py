@@ -93,7 +93,7 @@ def stats(device):
 # Icon memory
         draw.text((x+60, top+4), chr(62171), font=font_icon, fill=255)
 #Icon CPU     F0E4
-        draw.text((x+60, top+30), '\uF0E4', font=font_icon, fill=255)
+        draw.text((x+62, top+30), '\uF0E4', font=font2, fill=255)
 # Icon disk
         draw.text((x, top+30), chr(61888),  font=font2, fill=255)
 # Icon Wifi
@@ -106,7 +106,7 @@ def stats(device):
 # Text Disk usage
         draw.text((x+17, top+30), str(Disk), font=font, fill=255)
 # Text cpu usage
-        draw.text((x+60, top+30), str(CPU), font=font, fill=255)
+        draw.text((x+80, top+30), str(CPU), font=font, fill=255)
 
 # Text IP addresss
         draw.text((x+18, top+52), str(IP), font=font_text_small, fill=255)
