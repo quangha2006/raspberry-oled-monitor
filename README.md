@@ -1,7 +1,10 @@
 # How to use
 Step 1: https://luma-oled.readthedocs.io/en/latest/install.html
+
 Step 2: Run python with command: System_monitor.py --display sh1106
+
 Step 3: Auto run script on boot with rc.local
+
 Reference: https://marsown.com/wordpress/how-to-enable-etc-rc-local-with-systemd-on-ubuntu-20-04/
 
 Certain Linux distributions that use SystemD such as Ubuntu 20.04 may not allow you to run /etc/rc.local when the system is booting. In this tutorial we will go through how to enable /etc/rc.local with systemd during system boot on Ubuntu 20.04.
