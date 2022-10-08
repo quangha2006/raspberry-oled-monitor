@@ -1,8 +1,10 @@
 # How to use
 Step 1: https://luma-oled.readthedocs.io/en/latest/install.html
 
-Step 2: Run python with command: System_monitor.py --display sh1106
-
+Step 2: Run python with command: 
+```
+System_monitor.py --display sh1106
+```
 Step 3: Auto run script on boot with rc.local
 
 Reference: https://marsown.com/wordpress/how-to-enable-etc-rc-local-with-systemd-on-ubuntu-20-04/
