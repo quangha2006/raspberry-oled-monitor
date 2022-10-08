@@ -20,7 +20,7 @@ from datetime import datetime
 #if os.name != 'posix':
 #    sys.exit('{} platform not supported'.format(os.name))
 
-from demo_opts import get_device
+from oled_device import get_device
 from luma.core.render import canvas
 from PIL import ImageFont
 from PIL import ImageDraw
